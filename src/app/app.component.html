@@ -1,6 +1,6 @@
 <mat-card class="m5">
-    <form class="wid100">
-        <mat-form-field class="wid100">
+    <form>
+        <mat-form-field>
             <input type="text" [formControl]="myControl" placeholder="Pick one" aria-label="Number" matInput [matAutocomplete]="auto">
             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
                 <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
@@ -8,5 +8,6 @@
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
+        <button mat-raised-button color="warn" (click)="dilDegistir()">{{ceviriYonu}}</button>
     </form>
 </mat-card>
