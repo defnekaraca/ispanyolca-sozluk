@@ -1,1 +1,12 @@
-başlık = {{title}}
+<mat-card class="m5">
+    <form class="wid100">
+        <mat-form-field class="wid100">
+            <input type="text" [formControl]="myControl" placeholder="Pick one" aria-label="Number" matInput [matAutocomplete]="auto">
+            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </form>
+</mat-card>
