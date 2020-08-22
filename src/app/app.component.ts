@@ -15,6 +15,7 @@ export class AppComponent {
   filteredOptions: Observable<string[]>;
   suankiDil = 'Türkçe';
   ceviriYonu = 'Türkçe -> İspanyolca';
+  ceviri = '';
 
   ngOnInit() {
     this.setOptions();
@@ -47,5 +48,14 @@ export class AppComponent {
       this.ceviriYonu = 'Türkçe -> İspanyolca';
     }
     this.setOptions();
+  }
+
+  kelimeSecildi(e) {
+    const v = e.option.value;
+    if (this.suankiDil == 'Türkçe') {
+      this.ceviri = tr2es[v].join(', ');  
+    } else {
+      this.ceviri = es2tr[v].join(', ');
+    }
   }
 }
