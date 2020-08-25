@@ -16,13 +16,16 @@ export class AppComponent {
   suankiDil = 'Türkçe';
   ceviriYonu = 'Türkçe -> İspanyolca';
   ceviri = '';
+  secilenKelime = '';
 
   constructor(private _http: HttpClient) { }
 
   ngOnInit() {
     this.myControl.valueChanges.pipe(startWith(''), debounceTime(500)).subscribe(x => {
       console.log('value changesd: ', x);
-      this._filter(x);
+      if (x != this.secilenKelime) {
+        this._filter(x);
+      }
     });
   }
 
@@ -46,10 +49,14 @@ export class AppComponent {
 
   kelimeSecildi(e) {
     const v = e.option.value;
+    let f = 'es'
     if (this.suankiDil == 'Türkçe') {
-      this.ceviri = tr2es[v].join(', ');
-    } else {
-      this.ceviri = es2tr[v].join(', ');
+      f = 'tr'
     }
+    this.secilenKelime = v;
+
+    this._http.get('http://localhost:3000/ceviri?q=' + v + '&from=' + f).subscribe(x => {
+      this.ceviri = (x as string[]).join(', ');
+    });
   }
 }
