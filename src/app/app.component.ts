@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, debounceTime } from 'rxjs/operators';
 import { es2tr, tr2es } from './sozluk-veri';
 import { HttpClient } from '@angular/common/http';
 
@@ -12,7 +12,6 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AppComponent {
   myControl = new FormControl();
-  options: string[] = [];
   filteredOptions: Observable<string[]>;
   suankiDil = 'Türkçe';
   ceviriYonu = 'Türkçe -> İspanyolca';
@@ -21,31 +20,21 @@ export class AppComponent {
   constructor(private _http: HttpClient) { }
 
   ngOnInit() {
-    this.setOptions();
+    this.myControl.valueChanges.pipe(startWith(''), debounceTime(500)).subscribe(x => {
+      console.log('value changesd: ', x);
+      this._filter(x);
+    });
   }
 
-  private setOptions() {
+  private _filter(value: string) {
+    let from = 'es';
     if (this.ceviriYonu.startsWith('Türkçe')) {
-      this.options = Object.keys(tr2es);
-    } else {
-      this.options = Object.keys(es2tr);
+      from = 'tr'
     }
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value))
-    );
-  }
-
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-
-    return this.options.filter(option => option.toLowerCase().startsWith(filterValue));
+    this.filteredOptions = this._http.get('http://localhost:3000/oneriler?q=' + value + '&from=' + from) as Observable<string[]>;
   }
 
   dilDegistir() {
-    this._http.get('http://localhost:3000/oneriler?q=Ho&from=es').subscribe(x => {
-      console.log('oneriler sonucu: ', x);
-    })
     if (this.suankiDil == 'Türkçe') {
       this.suankiDil = 'İspanyolca';
       this.ceviriYonu = 'İspanyolca -> Türkçe';
@@ -53,7 +42,6 @@ export class AppComponent {
       this.suankiDil = 'Türkçe';
       this.ceviriYonu = 'Türkçe -> İspanyolca';
     }
-    this.setOptions();
   }
 
   kelimeSecildi(e) {

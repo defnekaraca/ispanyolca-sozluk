@@ -1,7 +1,8 @@
 <mat-card class="m5">
     <form>
         <mat-form-field>
-            <input type="text" [formControl]="myControl" placeholder="Pick one" aria-label="Number" matInput [matAutocomplete]="auto">
+            <input type="text" [formControl]="myControl" placeholder="Pick one" aria-label="Number" matInput
+                [matAutocomplete]="auto">
             <mat-autocomplete (optionSelected)="kelimeSecildi($event)" autoActiveFirstOption #auto="matAutocomplete">
                 <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
                     {{option}}
