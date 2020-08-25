@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { es2tr, tr2es } from './sozluk-veri';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,8 @@ export class AppComponent {
   suankiDil = 'Türkçe';
   ceviriYonu = 'Türkçe -> İspanyolca';
   ceviri = '';
+
+  constructor(private _http: HttpClient) { }
 
   ngOnInit() {
     this.setOptions();
@@ -40,6 +43,9 @@ export class AppComponent {
   }
 
   dilDegistir() {
+    this._http.get('http://localhost:3000/oneriler?q=Ho&from=es').subscribe(x => {
+      console.log('oneriler sonucu: ', x);
+    })
     if (this.suankiDil == 'Türkçe') {
       this.suankiDil = 'İspanyolca';
       this.ceviriYonu = 'İspanyolca -> Türkçe';
@@ -53,7 +59,7 @@ export class AppComponent {
   kelimeSecildi(e) {
     const v = e.option.value;
     if (this.suankiDil == 'Türkçe') {
-      this.ceviri = tr2es[v].join(', ');  
+      this.ceviri = tr2es[v].join(', ');
     } else {
       this.ceviri = es2tr[v].join(', ');
     }
